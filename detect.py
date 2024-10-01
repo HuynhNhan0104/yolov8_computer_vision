@@ -22,7 +22,7 @@ model_path, input, output, save ,show, fps, verbose = vars(args).values()
 model = YOLO(model=model_path,task="detect")
 
 # model.to("cuda")
-classes = [0,1,2,3,5,7]
+classes = [1,2,3,5,7]
 names = {0: "person", 1: "bicycle", 2: "car", 3: "motorcycle", 5: "bus", 7: "truck"}
 
 cap = cv2.VideoCapture(input)
@@ -30,9 +30,9 @@ cap = cv2.VideoCapture(input)
 
 assert cap.isOpened(), "Error reading video file"
 
-w, h, fps = (int(cap.get(x)) for x in (cv2.CAP_PROP_FRAME_WIDTH, cv2.CAP_PROP_FRAME_HEIGHT, cv2.CAP_PROP_FPS))
+w, h, fps_input = (int(cap.get(x)) for x in (cv2.CAP_PROP_FRAME_WIDTH, cv2.CAP_PROP_FRAME_HEIGHT, cv2.CAP_PROP_FPS))
 # Video writer
-video_writer = cv2.VideoWriter(output, cv2.VideoWriter_fourcc(*"mp4v"), fps, (w, h))
+video_writer = cv2.VideoWriter(output, cv2.VideoWriter_fourcc(*"mp4v"), fps_input, (w, h))
 
 frame_count = 0
 start_time = time.time()
@@ -45,7 +45,7 @@ while cap.isOpened():
     if not success:
         print("Video frame is empty or video processing has been successfully completed.")
         break
-    tracks = model.predict(im0,classes=classes,show=show, verbose = verbose)
+    tracks = model.predict(im0,classes=classes,show=False, verbose = verbose)
     if fps:
         frame_count+=1
         elapsed_time = time.time() - start_time
@@ -57,7 +57,12 @@ while cap.isOpened():
             # Reset biến
             frame_count = 0
             start_time = time.time() 
-
+            
+    annotated_frame = tracks[0].plot()
+    if show:
+        cv2.imshow("Video", annotated_frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
     
     if save:
         annotated_frame = tracks[0].plot()

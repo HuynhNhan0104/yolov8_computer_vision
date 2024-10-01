@@ -11,9 +11,10 @@ parser.add_argument("--output",type=str, help="save output to a specific path", 
 parser.add_argument("--save", action="store_true", help="save output to output path")
 parser.add_argument("--show", action="store_true", help="display inference frame on a window")
 parser.add_argument("--fps", action="store_true", help="show fps when running")
+parser.add_argument("--verbose", action="store_true", help="show log or not")
 args = parser.parse_args()
 
-model_path, input, output, save ,show, fps = vars(args).values()
+model_path, input, output, save ,show, fps, verbose = vars(args).values()
 
 model = YOLO(model_path)
 
@@ -43,7 +44,7 @@ line_pts = [(0, 360), (1280, 360)]
 speed_obj = solutions.SpeedEstimator(
     reg_pts=line_pts,
     names=names,
-    view_img=show,
+    view_img=False,
 )
 
 
@@ -54,9 +55,16 @@ while cap.isOpened():
         print("Video frame is empty or video processing has been successfully completed.")
         break
 
-    tracks = model.track(im0, persist=True,classes=classes)
+    tracks = model.track(im0, persist=True,classes=classes, verbose = verbose)
 
     im0 = speed_obj.estimate_speed(im0, tracks)
+    
+    
+    if show:
+        cv2.imshow("Video", im0)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+    
     if save:
         video_writer.write(im0)
 

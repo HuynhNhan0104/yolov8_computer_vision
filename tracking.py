@@ -49,26 +49,25 @@ while cap.isOpened():
     
     tracks = model.track(im0, persist=True,classes=classes,show=False,verbose=verbose)
     
-    # if fps:
-    #     frame_count+=1
-    #     elapsed_time = time.time() - start_time
-    #     if elapsed_time >= 1.0:
-    #         fps = frame_count / elapsed_time
-    #         print(f"FPS: {fps:.2f}")
-    #         total_count += frame_count
-    #         total_time += elapsed_time
-    #         # Reset biến
-    #         frame_count = 0
-    #         start_time = time.time() 
+    if fps:
+        frame_count+=1
+        elapsed_time = time.time() - start_time
+        if elapsed_time >= 1.0:
+            fps = frame_count / elapsed_time
+            print(f"FPS: {fps:.2f}")
+            total_count += frame_count
+            total_time += elapsed_time
+            # Reset biến
+            frame_count = 0
+            start_time = time.time() 
     
+    annotated_frame = tracks[0].plot()
     if show:
-        annotated_frame = tracks[0].plot()
         cv2.imshow("Video", annotated_frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     
     if save:
-        annotated_frame = tracks[0].plot()
         video_writer.write(annotated_frame)
     
         
