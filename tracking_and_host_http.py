@@ -8,8 +8,8 @@ import time
 parser = argparse.ArgumentParser(description="Example of argument passing")
 parser.add_argument("--model", type=str, help="path of your model, if using model yolo, it will be auto downloaded",default="yolov8n_openvino_model/")
 parser.add_argument("--input", type=str, help="0 to use camera device in your lap or path of a video", default="./input/traffic_highway_1280_720.mp4")
-# parser.add_argument("--output",type=str, help="save output to a specific path", default="./output/output.avi")
-# parser.add_argument("--save", action="store_true", help="save output to output path")
+parser.add_argument("--output",type=str, help="save output to a specific path", default="./output/output.avi")
+parser.add_argument("--save", action="store_true", help="save output to output path")
 parser.add_argument("--show", action="store_true", help="display inference frame on a window")
 parser.add_argument("--fps", action="store_true", help="show fps when running")
 args = parser.parse_args()
@@ -18,6 +18,7 @@ model_path, input, output, save ,show, fps = vars(args).values()
 
 # YOLOv8 detection process
 def run_detection(shared_name, frame_shape):
+    global fps
     model = YOLO(model_path)
     names = {0: 'person', 1: 'bicycle', 2: 'car', 3: 'motorcycle', 5: 'bus', 7: 'truck'}
     classes = [0, 1, 2, 3, 5, 7]
