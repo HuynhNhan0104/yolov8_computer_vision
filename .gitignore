@@ -1,0 +1,6 @@
+venv/
+yolov8n_openvino_model/
+yolov5nu_openvino_model/
+yolov5nu.pt
+yolov8n.pt
+kernel.errors.txt
