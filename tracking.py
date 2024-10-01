@@ -12,9 +12,10 @@ parser.add_argument("--output",type=str, help="save output to a specific path", 
 parser.add_argument("--save", action="store_true", help="save output to output path")
 parser.add_argument("--show", action="store_true", help="display inference frame on a window")
 parser.add_argument("--fps", action="store_true", help="show fps when running")
+parser.add_argument("--verbose", action="store_true", help="show log or not")
 args = parser.parse_args()
 
-model_path, input, output, save ,show, fps = vars(args).values()
+model_path, input, output, save ,show, fps, verbose = vars(args).values()
 
 
 
@@ -22,7 +23,7 @@ model_path, input, output, save ,show, fps = vars(args).values()
 model = YOLO(model=model_path,task="detect")
 
 # model.to("cuda")
-classes = [0,1,2,3,5,7]
+classes = [1,2,3,5,7]
 names = {0: "person", 1: "bicycle", 2: "car", 3: "motorcycle", 5: "bus", 7: "truck"}
 
 cap = cv2.VideoCapture(input)
@@ -46,22 +47,30 @@ while cap.isOpened():
         print("Video frame is empty or video processing has been successfully completed.")
         break
     
-    tracks = model.track(im0, persist=True,classes=classes,show=show)
+    tracks = model.track(im0, persist=True,classes=classes,show=False,verbose=verbose)
     
-    if fps:
-        frame_count+=1
-        elapsed_time = time.time() - start_time
-        if elapsed_time >= 1.0:
-            fps = frame_count / elapsed_time
-            print(f"FPS: {fps:.2f}")
-            total_count += frame_count
-            total_time += elapsed_time
-            # Reset biến
-            frame_count = 0
-            start_time = time.time() 
+    # if fps:
+    #     frame_count+=1
+    #     elapsed_time = time.time() - start_time
+    #     if elapsed_time >= 1.0:
+    #         fps = frame_count / elapsed_time
+    #         print(f"FPS: {fps:.2f}")
+    #         total_count += frame_count
+    #         total_time += elapsed_time
+    #         # Reset biến
+    #         frame_count = 0
+    #         start_time = time.time() 
+    
+    if show:
+        annotated_frame = tracks[0].plot()
+        cv2.imshow("Video", annotated_frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
     
     if save:
-        video_writer.write(im0)
+        annotated_frame = tracks[0].plot()
+        video_writer.write(annotated_frame)
+    
         
 print(f" fps averega {total_count/total_time if total_time != 0 else 0 }")
 

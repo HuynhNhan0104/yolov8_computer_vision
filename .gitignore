@@ -6,3 +6,4 @@ yolov8n.pt
 kernel.errors.txt
 output/
 output/output.avi
+yolov7-tiny.pt

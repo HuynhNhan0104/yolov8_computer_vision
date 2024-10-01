@@ -12,9 +12,10 @@ parser.add_argument("--output",type=str, help="save output to a specific path", 
 parser.add_argument("--save", action="store_true", help="save output to output path")
 parser.add_argument("--show", action="store_true", help="display inference frame on a window")
 parser.add_argument("--fps", action="store_true", help="show fps when running")
+parser.add_argument("--verbose", action="store_true", help="show log or not")
 args = parser.parse_args()
 
-model_path, input, output, save ,show, fps = vars(args).values()
+model_path, input, output, save ,show, fps, verbose = vars(args).values()
 
 # YOLOv8 detection process
 def run_detection(shared_name, frame_shape):
@@ -40,7 +41,7 @@ def run_detection(shared_name, frame_shape):
         success, frame = cap.read()
         if success:
             # Run YOLOv8 detection
-            results = model.track(frame, persist=True, classes=classes, show=show)
+            results = model.track(frame, persist=True, classes=classes, show=show,verbose=verbose)
         
             if fps:
                 frame_count+=1
