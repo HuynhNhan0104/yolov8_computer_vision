@@ -7,3 +7,5 @@ kernel.errors.txt
 output/
 output/output.avi
 yolov7-tiny.pt
+yolov8n.onnx
+yolov8n.torchscript
