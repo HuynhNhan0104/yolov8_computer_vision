@@ -3,7 +3,7 @@ from pathlib import Path
 
 # Download labels
 segments = True  # segment or box labels
-dir = Path("../datasets/coco")  # dataset root dir
+dir = Path("datasets/coco")  # dataset root dir
 url = 'https://github.com/ultralytics/assets/releases/download/v0.0.0/'
 urls = [url + ('coco2017labels-segments.zip' if segments else 'coco2017labels.zip')]  # labels
 download(urls, dir=dir.parent)
